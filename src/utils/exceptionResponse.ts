@@ -1,11 +1,4 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { PRISMA_ERROR_MAPPING } from 'src/constants/exception';
 
 @Injectable()

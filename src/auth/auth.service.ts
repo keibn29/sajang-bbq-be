@@ -15,19 +15,6 @@ export class AuthService {
 
   async login(data: LoginDto) {
     try {
-      // register excample
-      // const hashedPassword = await hash(data.password);
-      // const user = await this.prismaService.user.create({
-      //   data: {
-      //     email: data.email,
-      //     password: hashedPassword,
-      //     firstName: '',
-      //     lastName: '',
-      //     avatar: '',
-      //   },
-      // });
-      // return user;
-
       const user = await this.prismaService.user.findUnique({
         where: {
           email: data.email,
@@ -39,16 +26,16 @@ export class AuthService {
         throw new HttpException(INVALID_LOGIN, INVALID_LOGIN.statusCode);
       }
 
-      return await this.generateAccessToken(user.id, user.email);
+      return await this.generateAccessToken(user);
     } catch (err) {
       throw new ExceptionService(err);
     }
   }
 
-  async generateAccessToken(userId: number, email: string) {
+  async generateAccessToken(user: any) {
     const payload = {
-      sub: userId,
-      email,
+      sub: user.id,
+      email: user.email,
     };
     const signConfig = {
       expiresIn: '24h',
@@ -56,6 +43,7 @@ export class AuthService {
     };
     const accessToken = await this.jwtService.signAsync(payload, signConfig);
 
-    return { accessToken };
+    delete user.password;
+    return { user, accessToken };
   }
 }
