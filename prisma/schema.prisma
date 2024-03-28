@@ -28,7 +28,7 @@ model Branch {
   address   String
   phone     String
   avatar    String?
-  utils     UtilsOnBranches[]
+  utils     UtilitiesOnBranches[]
   schedules Schedules[]
   createAt  DateTime          @default(now())
   updatedAt DateTime          @updatedAt
@@ -36,25 +36,25 @@ model Branch {
   @@map("branches")
 }
 
-model Util {
+model Utility {
   id        Int               @id @default(autoincrement())
   name      String
-  branches  UtilsOnBranches[]
+  branches  UtilitiesOnBranches[]
   createAt  DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 
-  @@map("utils")
+  @@map("utilities")
 }
 
-model UtilsOnBranches {
+model UtilitiesOnBranches {
   branch    Branch   @relation(fields: [branchId], references: [id])
   branchId  Int
-  util      Util     @relation(fields: [utilId], references: [id])
-  utilId    Int
+  util      Utility     @relation(fields: [UtilityId], references: [id])
+  UtilityId    Int
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([branchId, utilId])
+  @@id([branchId, UtilityId])
   @@map("utils_on_branches")
 }
 

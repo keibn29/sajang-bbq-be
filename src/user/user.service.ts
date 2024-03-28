@@ -10,9 +10,10 @@ export class UserService {
 
   async create(data: CreateUserDto) {
     try {
-      const { email, password, firstName, lastName, phone, avatar } = data;
+      const { email, password, firstName, lastName, phone, avatar, role } =
+        data;
       const hashedPassword = await hash(password);
-      await this.prismaService.user.create({
+      const user = await this.prismaService.user.create({
         data: {
           email,
           password: hashedPassword,
@@ -20,12 +21,14 @@ export class UserService {
           lastName,
           phone,
           avatar,
+          role,
         },
       });
 
+      delete user.password;
       return {
         statusCode: HttpStatus.CREATED,
-        message: 'Add new user success',
+        user,
       };
     } catch (err) {
       throw new ExceptionService(err);

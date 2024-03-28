@@ -1,22 +1,19 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { hash } from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ExceptionService } from 'src/utils/exceptionResponse';
+import { CreateBranchDto } from './dto/create-dto';
 
 @Injectable()
 export class BranchService {
   constructor(private prismaService: PrismaService) {}
 
-  async create(data: any) {
+  async create(data: CreateBranchDto) {
     try {
-      const { email, password, firstName, lastName, phone, avatar } = data;
-      const hashedPassword = await hash(password);
-      await this.prismaService.user.create({
+      const { name, address, phone, avatar } = data;
+      await this.prismaService.branch.create({
         data: {
-          email,
-          password: hashedPassword,
-          firstName,
-          lastName,
+          name,
+          address,
           phone,
           avatar,
         },

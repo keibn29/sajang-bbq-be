@@ -5,6 +5,12 @@ import { JwtStategy } from './auth/strategy';
 import { BranchModule } from './branch/branch.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { BlogModule } from './blog/blog.module';
+import { UtilityModule } from './utility/utility.module';
+import { GalleryModule } from './gallery/gallery.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { TimeModule } from './time/time.module';
+import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
@@ -15,6 +21,12 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     BranchModule,
+    BlogModule,
+    UtilityModule,
+    GalleryModule,
+    ScheduleModule,
+    TimeModule,
+    BookingModule,
   ],
   providers: [JwtStategy],
 })
