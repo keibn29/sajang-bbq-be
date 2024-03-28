@@ -15,8 +15,104 @@ model User {
   lastName  String
   phone     String
   avatar    String?
+  role      String
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
+}
+
+model Branch {
+  id        Int               @id @default(autoincrement())
+  name      String
+  address   String
+  phone     String
+  avatar    String?
+  utils     UtilsOnBranches[]
+  schedules Schedules[]
+  createAt  DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@map("branches")
+}
+
+model Util {
+  id        Int               @id @default(autoincrement())
+  name      String
+  branches  UtilsOnBranches[]
+  createAt  DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@map("utils")
+}
+
+model UtilsOnBranches {
+  branch    Branch   @relation(fields: [branchId], references: [id])
+  branchId  Int
+  util      Util     @relation(fields: [utilId], references: [id])
+  utilId    Int
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([branchId, utilId])
+  @@map("utils_on_branches")
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  statusId   String
+  customerId String
+  branchId   String
+  table      Int
+  date       String
+  time       Time     @relation(fields: [timeId], references: [id])
+  timeId     Int
+  createAt   DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("bookings")
+}
+
+model Time {
+  id        Int         @id @default(autoincrement())
+  name      String
+  bookings  Booking[]
+  schedules Schedules[]
+  createAt  DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("time")
+}
+
+model Schedules {
+  id        Int      @id @default(autoincrement())
+  date      String
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  branch    Branch   @relation(fields: [branchId], references: [id])
+  branchId  Int
+  time      Time     @relation(fields: [timeId], references: [id])
+  timeId    Int
+
+  @@map("schedules")
+}
+
+model Gallery {
+  id        Int      @id @default(autoincrement())
+  url       String
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("galleries")
+}
+
+model Blog {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String   @db.Text
+  imageUrl  String
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blogs")
 }

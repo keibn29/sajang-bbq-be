@@ -2,13 +2,12 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { hash } from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ExceptionService } from 'src/utils/exceptionResponse';
-import { CreateUserDto } from './dto';
 
 @Injectable()
-export class UserService {
+export class BranchService {
   constructor(private prismaService: PrismaService) {}
 
-  async create(data: CreateUserDto) {
+  async create(data: any) {
     try {
       const { email, password, firstName, lastName, phone, avatar } = data;
       const hashedPassword = await hash(password);
@@ -25,7 +24,7 @@ export class UserService {
 
       return {
         statusCode: HttpStatus.CREATED,
-        message: 'Add new user success',
+        message: 'Add new success',
       };
     } catch (err) {
       throw new ExceptionService(err);
