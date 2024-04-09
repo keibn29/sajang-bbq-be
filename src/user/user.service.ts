@@ -13,8 +13,8 @@ export class UserService {
     try {
       const { current, size } = params;
       const user = await this.prismaService.user.findMany({
-        skip: (+current - 1) * +size,
-        take: +size,
+        skip: (Number(current) - 1) * Number(size),
+        take: Number(size),
       });
       const count = await this.prismaService.user.count();
 

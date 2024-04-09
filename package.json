@@ -5,6 +5,9 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "db:dev:remove": "docker compose rm postgresDB --stop --force --volumes",
     "db:dev:create": "docker compose up postgresDB --detach",
