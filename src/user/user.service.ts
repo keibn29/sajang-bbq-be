@@ -27,10 +27,9 @@ export class UserService {
     throw new ExceptionService(err);
   }
 
-  async create(data: CreateUserDto) {
+  async create(data: CreateUserDto, avatar: Express.Multer.File) {
     try {
-      const { email, password, firstName, lastName, phone, avatar, role } =
-        data;
+      const { email, password, firstName, lastName, phone, role } = data;
       const hashedPassword = await hash(password);
       const user = await this.prismaService.user.create({
         data: {
@@ -39,7 +38,7 @@ export class UserService {
           firstName,
           lastName,
           phone,
-          avatar,
+          avatar: avatar.path,
           role,
         },
       });

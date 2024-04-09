@@ -18,9 +18,7 @@ import { MulterModule } from '@nestjs/platform-express';
     JwtModule.register({
       global: true,
     }),
-    MulterModule.register({
-      dest: './images',
-    }),
+    MulterModule.register(),
     PrismaModule,
     AuthModule,
     UserModule,

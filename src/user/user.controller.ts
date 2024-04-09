@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { getFileInterceptor } from 'src/middlewares/multer';
 import { CreateUserDto } from './dto';
 import { ReadUserDto } from './dto/read-user.dto';
 import { UserService } from './user.service';
@@ -14,7 +23,11 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() userData: CreateUserDto) {
-    return await this.userService.create(userData);
+  @UseInterceptors(getFileInterceptor('avatar'))
+  async create(
+    @Body() userData: CreateUserDto,
+    @UploadedFile() avatar: Express.Multer.File,
+  ) {
+    return await this.userService.create(userData, avatar);
   }
 }
