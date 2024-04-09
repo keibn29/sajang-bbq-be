@@ -10,21 +10,22 @@ export class UserService {
   constructor(private prismaService: PrismaService) {}
 
   async read(params: ReadUserDto) {
-    const { current, size } = params;
-    const user = await this.prismaService.user.findMany({
-      skip: (+current - 1) * +size,
-      take: +size,
-    });
-    const count = await this.prismaService.user.count();
+    try {
+      const { current, size } = params;
+      const user = await this.prismaService.user.findMany({
+        skip: (+current - 1) * +size,
+        take: +size,
+      });
+      const count = await this.prismaService.user.count();
 
-    return {
-      statusCode: HttpStatus.OK,
-      user,
-      count,
-    };
-  }
-  catch(err) {
-    throw new ExceptionService(err);
+      return {
+        statusCode: HttpStatus.OK,
+        user,
+        count,
+      };
+    } catch (err) {
+      throw new ExceptionService(err);
+    }
   }
 
   async create(data: CreateUserDto, avatar: Express.Multer.File) {
@@ -38,7 +39,7 @@ export class UserService {
           firstName,
           lastName,
           phone,
-          avatar: avatar.path,
+          avatar: avatar?.path,
           role,
         },
       });
@@ -47,6 +48,48 @@ export class UserService {
       return {
         statusCode: HttpStatus.CREATED,
         user,
+      };
+    } catch (err) {
+      throw new ExceptionService(err);
+    }
+  }
+
+  async update(params: any, data: CreateUserDto, avatar: Express.Multer.File) {
+    try {
+      const { firstName, lastName, phone, role } = data;
+      await this.prismaService.user.update({
+        where: {
+          id: Number(params.id),
+        },
+        data: {
+          firstName,
+          lastName,
+          phone,
+          avatar: avatar?.path,
+          role,
+        },
+      });
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Success',
+      };
+    } catch (err) {
+      throw new ExceptionService(err);
+    }
+  }
+
+  async delete(params: any) {
+    try {
+      await this.prismaService.user.delete({
+        where: {
+          id: Number(params.id),
+        },
+      });
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Success',
       };
     } catch (err) {
       throw new ExceptionService(err);

@@ -12,6 +12,8 @@ import { ScheduleModule } from './schedule/schedule.module';
 import { TimeModule } from './time/time.module';
 import { BookingModule } from './booking/booking.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -19,6 +21,10 @@ import { MulterModule } from '@nestjs/platform-express';
       global: true,
     }),
     MulterModule.register(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'images'),
+      serveRoot: '/images/',
+    }),
     PrismaModule,
     AuthModule,
     UserModule,

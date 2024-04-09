@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseInterceptors,
@@ -16,7 +19,6 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  // @UseGuards(JwtAuthGuard)
   @Get()
   async read(@Query() params: ReadUserDto) {
     return await this.userService.read(params);
@@ -29,5 +31,20 @@ export class UserController {
     @UploadedFile() avatar: Express.Multer.File,
   ) {
     return await this.userService.create(userData, avatar);
+  }
+
+  @Put('/:id')
+  @UseInterceptors(getFileInterceptor('avatar'))
+  async update(
+    @Param() params: any,
+    @Body() userData: CreateUserDto,
+    @UploadedFile() avatar: Express.Multer.File,
+  ) {
+    return await this.userService.update(params, userData, avatar);
+  }
+
+  @Delete('/:id')
+  async delete(@Param() params: any) {
+    return await this.userService.delete(params);
   }
 }
