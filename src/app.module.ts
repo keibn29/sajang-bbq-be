@@ -11,11 +11,15 @@ import { GalleryModule } from './gallery/gallery.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { TimeModule } from './time/time.module';
 import { BookingModule } from './booking/booking.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     JwtModule.register({
       global: true,
+    }),
+    MulterModule.register({
+      dest: './images',
     }),
     PrismaModule,
     AuthModule,
