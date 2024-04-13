@@ -10,5 +10,11 @@ export class CreateBranchDto {
   @IsNotEmpty()
   phone: string;
 
+  @IsNotEmpty()
+  table: number;
+
+  @IsNotEmpty()
+  utils: string;
+
   avatar: string;
 }

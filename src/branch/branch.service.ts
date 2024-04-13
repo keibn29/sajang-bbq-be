@@ -9,16 +9,23 @@ export class BranchService {
 
   async read(params: any) {
     try {
-      const { current, size } = params;
-      const user = await this.prismaService.branch.findMany({
+      const { current = 1, size = 9999 } = params;
+      const branch = await this.prismaService.branch.findMany({
         skip: (Number(current) - 1) * Number(size),
         take: Number(size),
+        include: {
+          utils: {
+            include: {
+              util: true,
+            },
+          },
+        },
       });
       const count = await this.prismaService.branch.count();
 
       return {
         statusCode: HttpStatus.OK,
-        user,
+        branch,
         count,
       };
     } catch (err) {
@@ -28,7 +35,7 @@ export class BranchService {
 
   async getById(params: any) {
     try {
-      const user = await this.prismaService.branch.findUnique({
+      const branch = await this.prismaService.branch.findUnique({
         where: {
           id: Number(params.id),
         },
@@ -36,7 +43,7 @@ export class BranchService {
 
       return {
         statusCode: HttpStatus.OK,
-        user,
+        branch,
       };
     } catch (err) {
       throw new ExceptionService(err);
@@ -45,14 +52,23 @@ export class BranchService {
 
   async create(data: CreateBranchDto, avatar: Express.Multer.File) {
     try {
-      const { name, address, phone } = data;
-      await this.prismaService.branch.create({
+      const { name, address, phone, table, utils: stringUtils } = data;
+      const utils = stringUtils.split(',');
+      const branch = await this.prismaService.branch.create({
         data: {
           name,
           address,
           phone,
+          table: +table,
           avatar: avatar?.path,
         },
+      });
+
+      await this.prismaService.utilitiesOnBranches.createMany({
+        data: utils.map((utilId) => ({
+          branchId: branch.id,
+          UtilityId: +utilId,
+        })),
       });
 
       return {

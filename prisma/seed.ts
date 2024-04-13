@@ -18,6 +18,17 @@ async function main() {
     ],
     skipDuplicates: true,
   });
+  await prisma.utility.createMany({
+    data: [
+      { name: 'Chỗ để ô tô' },
+      { name: 'Phòng hút thuốc' },
+      { name: 'Phòng chơi trẻ em' },
+      { name: 'Khu trong nhà' },
+      { name: 'Khu ngoài trời' },
+      { name: 'Phòng riêng' },
+    ],
+    skipDuplicates: true,
+  });
 }
 main()
   .then(async () => {

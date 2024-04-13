@@ -5,7 +5,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -28,6 +28,7 @@ model Branch {
   name      String
   address   String
   phone     String
+  table     Int
   avatar    String?
   utils     UtilitiesOnBranches[]
   createAt  DateTime              @default(now())

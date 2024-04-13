@@ -12,6 +12,7 @@ import { GalleryModule } from './gallery/gallery.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { UtilityModule } from './utility/utility.module';
+import { ScheduleModule } from './schedule/schedule.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UtilityModule } from './utility/utility.module';
     UtilityModule,
     GalleryModule,
     BookingModule,
+    ScheduleModule,
   ],
   providers: [JwtStategy],
 })
