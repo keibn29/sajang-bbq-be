@@ -20,7 +20,7 @@ import { UtilityModule } from './utility/utility.module';
     }),
     MulterModule.register(),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'images'),
+      rootPath: join(__dirname, '..', '..', 'images'),
       serveRoot: '/images/',
     }),
     PrismaModule,
