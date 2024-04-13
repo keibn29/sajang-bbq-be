@@ -60,9 +60,9 @@ model UtilitiesOnBranches {
 
 model Booking {
   id         Int      @id @default(autoincrement())
-  statusId   String
-  customerId String
-  branchId   String
+  status     String
+  customerId Int
+  branchId   Int
   table      Int
   date       String
   schedule   Schedule @relation(fields: [scheduleId], references: [id])
