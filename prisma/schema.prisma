@@ -3,22 +3,23 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  // directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
   password  String
   firstName String
   lastName  String
   phone     String
   avatar    String?
   role      String
-  createAt  DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createAt  DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Booking   Booking[]
 
   @@map("users")
 }
@@ -33,6 +34,7 @@ model Branch {
   utils     UtilitiesOnBranches[]
   createAt  DateTime              @default(now())
   updatedAt DateTime              @updatedAt
+  Booking   Booking[]
 
   @@map("branches")
 }
@@ -60,16 +62,18 @@ model UtilitiesOnBranches {
 }
 
 model Booking {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   status     String
+  customer   User?     @relation(fields: [customerId], references: [id])
   customerId Int
+  branch     Branch?   @relation(fields: [branchId], references: [id])
   branchId   Int
   table      Int
   date       String
   schedule   Schedule? @relation(fields: [scheduleId], references: [id])
   scheduleId Int
-  createAt   DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createAt   DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@map("bookings")
 }

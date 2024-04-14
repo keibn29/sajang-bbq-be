@@ -14,6 +14,10 @@ export class BookingService {
       const booking = await this.prismaService.booking.findMany({
         skip: (Number(current) - 1) * Number(size),
         take: Number(size),
+        include: {
+          branch: true,
+          customer: true,
+        },
       });
       const count = await this.prismaService.booking.count();
 
