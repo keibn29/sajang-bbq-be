@@ -33,7 +33,7 @@ export class UserController {
     return await this.userService.create(userData, avatar);
   }
 
-  @Put('/:id')
+  @Put(':id')
   @UseInterceptors(getFileInterceptor('avatar'))
   async update(
     @Param() params: any,
@@ -43,7 +43,7 @@ export class UserController {
     return await this.userService.update(params, userData, avatar);
   }
 
-  @Delete('/:id')
+  @Delete(':id')
   async delete(@Param() params: any) {
     return await this.userService.delete(params);
   }

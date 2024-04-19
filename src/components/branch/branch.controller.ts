@@ -22,7 +22,7 @@ export class BranchController {
     return await this.branchService.read(params);
   }
 
-  @Get('/:id')
+  @Get(':id')
   async getById(@Param() params: any) {
     return await this.branchService.getById(params);
   }
@@ -36,7 +36,7 @@ export class BranchController {
     return await this.branchService.create(userData, avatar);
   }
 
-  @Put('/:id')
+  @Put(':id')
   @UseInterceptors(getFileInterceptor('avatar'))
   async update(
     @Param() params: any,
@@ -46,7 +46,7 @@ export class BranchController {
     return await this.branchService.update(params, userData, avatar);
   }
 
-  @Delete('/:id')
+  @Delete(':id')
   async delete(@Param() params: any) {
     return await this.branchService.delete(params);
   }
