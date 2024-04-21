@@ -6,23 +6,31 @@ import {
   Param,
   Delete,
   Put,
+  UploadedFile,
+  UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { getFileInterceptor } from 'src/middlewares/multer';
 
 @Controller('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
-  create(@Body() createBlogDto: CreateBlogDto) {
-    return this.blogService.create(createBlogDto);
+  @UseInterceptors(getFileInterceptor('avatar'))
+  create(
+    @Body() createBlogDto: CreateBlogDto,
+    @UploadedFile() avatar: Express.Multer.File,
+  ) {
+    return this.blogService.create(createBlogDto, avatar);
   }
 
   @Get()
-  findAll() {
-    return this.blogService.findAll();
+  findAll(@Query() params: any) {
+    return this.blogService.findAll(params);
   }
 
   @Get(':id')
@@ -31,8 +39,13 @@ export class BlogController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogService.update(+id, updateBlogDto);
+  @UseInterceptors(getFileInterceptor('avatar'))
+  update(
+    @Param('id') id: string,
+    @Body() updateBlogDto: UpdateBlogDto,
+    @UploadedFile() avatar: Express.Multer.File,
+  ) {
+    return this.blogService.update(+id, updateBlogDto, avatar);
   }
 
   @Delete(':id')

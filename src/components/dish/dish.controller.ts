@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { DishService } from './dish.service';
 import { CreateDishDto } from './dto/create-dish.dto';
@@ -21,8 +22,8 @@ export class DishController {
   }
 
   @Get()
-  findAll() {
-    return this.dishService.findAll();
+  findAll(@Query() params: any) {
+    return this.dishService.findAll(params);
   }
 
   @Get(':id')

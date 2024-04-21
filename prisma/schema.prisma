@@ -35,6 +35,7 @@ model Branch {
   table     Int
   avatar    String?
   utils     UtilitiesOnBranches[]
+  dish      Dish[]
   createAt  DateTime              @default(now())
   updatedAt DateTime              @updatedAt
   Booking   Booking[]
@@ -53,9 +54,9 @@ model Utility {
 }
 
 model UtilitiesOnBranches {
-  branch    Branch   @relation(fields: [branchId], references: [id])
+  branch    Branch?   @relation(fields: [branchId], references: [id])
   branchId  Int
-  util      Utility  @relation(fields: [UtilityId], references: [id])
+  util      Utility?  @relation(fields: [UtilityId], references: [id])
   UtilityId Int
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -109,4 +110,15 @@ model Blog {
   updatedAt DateTime @updatedAt
 
   @@map("blogs")
+}
+
+model Dish {
+  id        Int      @id @default(autoincrement())
+  name      String
+  branch    Branch?  @relation(fields: [branchId], references: [id])
+  branchId  Int
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("dishes")
 }
