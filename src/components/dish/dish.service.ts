@@ -27,7 +27,7 @@ export class DishService {
 
   async findAll(params: any) {
     try {
-      const { current, size } = params;
+      const { current = 1, size = 9999 } = params;
       const dishes = await this.prismaService.dish.findMany({
         skip: (Number(current) - 1) * Number(size),
         take: Number(size),

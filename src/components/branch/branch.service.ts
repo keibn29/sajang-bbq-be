@@ -54,21 +54,23 @@ export class BranchService {
     try {
       const { name, address, phone, table, utils: stringUtils } = data;
       const utils = stringUtils.split(',');
-      const branch = await this.prismaService.branch.create({
+      await this.prismaService.branch.create({
         data: {
           name,
           address,
           phone,
           table: +table,
           avatar: avatar?.path,
+          utils: {
+            create: utils.map((utilId) => ({
+              util: {
+                connect: {
+                  id: +utilId,
+                },
+              },
+            })),
+          },
         },
-      });
-
-      await this.prismaService.utilitiesOnBranches.createMany({
-        data: utils.map((utilId) => ({
-          branchId: branch.id,
-          UtilityId: +utilId,
-        })),
       });
 
       return {
@@ -82,7 +84,8 @@ export class BranchService {
 
   async update(params: any, data: any, avatar: Express.Multer.File) {
     try {
-      const { name, address, phone } = data;
+      const { name, address, phone, table, utils: stringUtils } = data;
+      const utils = stringUtils.split(',');
       await this.prismaService.branch.update({
         where: {
           id: Number(params.id),
@@ -91,7 +94,20 @@ export class BranchService {
           name,
           address,
           phone,
+          table: +table,
           avatar: avatar?.path,
+          utils: {
+            deleteMany: {
+              branchId: Number(params.id),
+            },
+            create: utils.map((utilId) => ({
+              util: {
+                connect: {
+                  id: +utilId,
+                },
+              },
+            })),
+          },
         },
       });
 
@@ -106,6 +122,11 @@ export class BranchService {
 
   async delete(params: any) {
     try {
+      await this.prismaService.utilitiesOnBranches.deleteMany({
+        where: {
+          branchId: Number(params.id),
+        },
+      });
       await this.prismaService.branch.delete({
         where: {
           id: Number(params.id),

@@ -75,7 +75,7 @@ model Booking {
   date       String
   schedule   Schedule?          @relation(fields: [scheduleId], references: [id])
   scheduleId Int
-  dish       DishesOnBookings[]
+  dishes     DishesOnBookings[]
   createAt   DateTime           @default(now())
   updatedAt  DateTime           @updatedAt
 
@@ -123,7 +123,6 @@ model Dish {
 }
 
 model DishesOnBookings {
-  id        Int      @id @default(autoincrement())
   dish      Dish?    @relation(fields: [dishId], references: [id])
   dishId    Int
   Booking   Booking? @relation(fields: [bookingId], references: [id])
@@ -131,5 +130,6 @@ model DishesOnBookings {
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@id([dishId, bookingId])
   @@map("dishes_on_bookings")
 }

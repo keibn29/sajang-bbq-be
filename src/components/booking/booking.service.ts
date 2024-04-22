@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ENUM_BOOKING_STATUS } from 'src/constants/app';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ExceptionService } from 'src/utils/exceptionResponse';
@@ -17,6 +17,15 @@ export class BookingService {
         include: {
           branch: true,
           customer: true,
+          dishes: {
+            include: {
+              dish: true,
+            },
+          },
+          schedule: true,
+        },
+        orderBy: {
+          updatedAt: 'desc',
         },
       });
       const count = await this.prismaService.booking.count();
@@ -50,7 +59,19 @@ export class BookingService {
 
   async create(data: any) {
     try {
-      const { customerId, branchId, table, date, scheduleId } = data;
+      const { customerId, branchId, table, date, scheduleId, dishes } = data;
+      const isValidTable = await this.isValidTable(data);
+
+      if (!isValidTable) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: 'Đã hết bàn ở khung giờ này, vui lòng chọn thời gian khác',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       await this.prismaService.booking.create({
         data: {
           status: ENUM_BOOKING_STATUS.new,
@@ -59,6 +80,15 @@ export class BookingService {
           table: +table,
           date,
           scheduleId: +scheduleId,
+          dishes: {
+            create: dishes.map((dishId) => ({
+              dish: {
+                connect: {
+                  id: +dishId,
+                },
+              },
+            })),
+          },
         },
       });
 
@@ -69,6 +99,35 @@ export class BookingService {
     } catch (err) {
       throw new ExceptionService(err);
     }
+  }
+
+  async isValidTable(data: any) {
+    const existedBranch = await this.prismaService.branch.findUnique({
+      where: {
+        id: data.branchId,
+      },
+      select: {
+        table: true,
+      },
+    });
+
+    const existedBooking = await this.prismaService.booking.findMany({
+      where: {
+        branchId: +data.branchId,
+        scheduleId: +data.scheduleId,
+        date: data.date,
+      },
+      select: {
+        table: true,
+      },
+    });
+
+    const totalExistedBookingTable = existedBooking.reduce(
+      (acc, cur) => acc + cur.table,
+      0,
+    );
+
+    return totalExistedBookingTable + Number(data.table) <= existedBranch.table;
   }
 
   async update(params: any, data: UpdateBookingDto) {

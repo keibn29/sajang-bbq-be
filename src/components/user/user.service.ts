@@ -57,7 +57,7 @@ export class UserService {
   async update(params: any, data: CreateUserDto, avatar: Express.Multer.File) {
     try {
       const { firstName, lastName, phone, role } = data;
-      await this.prismaService.user.update({
+      const user = await this.prismaService.user.update({
         where: {
           id: Number(params.id),
         },
@@ -73,6 +73,7 @@ export class UserService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Success',
+        user,
       };
     } catch (err) {
       throw new ExceptionService(err);
