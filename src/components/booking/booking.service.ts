@@ -168,6 +168,11 @@ export class BookingService {
 
   async delete(params: any) {
     try {
+      await this.prismaService.dishesOnBookings.deleteMany({
+        where: {
+          bookingId: Number(params.id),
+        },
+      });
       await this.prismaService.booking.delete({
         where: {
           id: Number(params.id),
