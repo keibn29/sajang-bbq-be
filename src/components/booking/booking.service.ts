@@ -10,8 +10,14 @@ export class BookingService {
 
   async read(params: any) {
     try {
-      const { current, size } = params;
+      const { current, size, customerId } = params;
       const booking = await this.prismaService.booking.findMany({
+        where: {
+          NOT: {
+            status: ENUM_BOOKING_STATUS.notDeposit,
+          },
+          customerId: customerId ? +customerId : undefined,
+        },
         skip: (Number(current) - 1) * Number(size),
         take: Number(size),
         include: {
@@ -28,7 +34,14 @@ export class BookingService {
           updatedAt: 'desc',
         },
       });
-      const count = await this.prismaService.booking.count();
+      const count = await this.prismaService.booking.count({
+        where: {
+          NOT: {
+            status: ENUM_BOOKING_STATUS.notDeposit,
+          },
+          customerId: customerId ? +customerId : undefined,
+        },
+      });
 
       return {
         statusCode: HttpStatus.OK,
@@ -72,9 +85,9 @@ export class BookingService {
         );
       }
 
-      await this.prismaService.booking.create({
+      const booking = await this.prismaService.booking.create({
         data: {
-          status: ENUM_BOOKING_STATUS.new,
+          status: ENUM_BOOKING_STATUS.notDeposit,
           customerId: +customerId,
           branchId: +branchId,
           table: +table,
@@ -95,6 +108,7 @@ export class BookingService {
       return {
         statusCode: HttpStatus.CREATED,
         message: 'Success',
+        booking,
       };
     } catch (err) {
       throw new ExceptionService(err);
@@ -113,6 +127,9 @@ export class BookingService {
 
     const existedBooking = await this.prismaService.booking.findMany({
       where: {
+        NOT: {
+          status: ENUM_BOOKING_STATUS.notDeposit,
+        },
         branchId: +data.branchId,
         scheduleId: +data.scheduleId,
         date: data.date,
