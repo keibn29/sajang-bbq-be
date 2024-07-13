@@ -31,6 +31,9 @@ export class DishService {
       const dishes = await this.prismaService.dish.findMany({
         skip: (Number(current) - 1) * Number(size),
         take: Number(size),
+        include: {
+          bookings: true,
+        },
       });
       const count = await this.prismaService.dish.count();
 
