@@ -9,10 +9,12 @@ export class DishService {
   constructor(private prismaService: PrismaService) {}
   async create(createDishDto: CreateDishDto) {
     try {
-      const { name } = createDishDto;
+      const { name, role, price } = createDishDto;
       await this.prismaService.dish.create({
         data: {
           name,
+          role,
+          price,
         },
       });
 
@@ -53,13 +55,15 @@ export class DishService {
 
   async update(id: number, updateDishDto: UpdateDishDto) {
     try {
-      const { name } = updateDishDto;
+      const { name, role, price } = updateDishDto;
       await this.prismaService.dish.update({
         where: {
           id,
         },
         data: {
           name,
+          role,
+          price,
         },
       });
 
